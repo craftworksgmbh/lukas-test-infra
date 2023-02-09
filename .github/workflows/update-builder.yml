@@ -1,0 +1,48 @@
+name: Update builder dependencies
+
+on:
+  schedule:
+    # At 05:15 on Saturday.
+    # https://crontab.guru/#15_5_*_*_6
+    - cron: "15 5 * * 6"
+  workflow_dispatch:
+
+jobs:
+  update-builder-dependencies:
+    name: Update builder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update builder dependencies
+        run: |
+          pushd builder
+          ./updatestatic.sh
+          popd
+
+      - name: Commit and create PR
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: "Update builder dependencies"
+          body: "Updates builder dependencies by executing updatestatic.sh."
+          author: "GitHub <noreply@github.com>"
+          branch: "chore/update-builder-dependencies"
+          commit-message: "chore(deps): Update builder dependencies"
+          labels: "dependencies, builder"
+
+#      - name: Enable PR auto-merge
+#        if: steps.cpr.outputs.pull-request-operation == 'created'
+#        uses: peter-evans/enable-pull-request-automerge@v2
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+#          merge-method: rebase
+
+#      - name: Approve PR
+#        if: steps.cpr.outputs.pull-request-operation == 'created'
+#        uses: juliangruber/approve-pull-request-action@v1
+#        with:
+#          github-token: ${{ secrets.YOUR_TOKEN }}
+#          number: ${{ steps.cpr.outputs.pull-request-number }}

@@ -1,0 +1,6 @@
+image:
+  base: registry.craftworks.io/__nameKebab__
+  version: latest
+build:
+  number: 0
+

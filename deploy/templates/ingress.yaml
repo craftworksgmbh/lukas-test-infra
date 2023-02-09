@@ -1,0 +1,34 @@
+# ===marker:start:frontend===
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-frontend-ingress
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Release.Name }}.k8s1.craftworks.io`)
+      services:
+        - name: {{ .Release.Name }}-frontend
+          port: 80
+# ===marker:end:frontend===
+# ===marker:start:backend===
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-backend-ingress
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Release.Name }}.k8s1.craftworks.io`) && PathPrefix(`/api`)
+      services:
+        - name: {{ .Release.Name }}-backend
+          port: 80
+# ===marker:end:backend===

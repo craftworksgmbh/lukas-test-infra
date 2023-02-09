@@ -1,0 +1,5 @@
+apiVersion: v2
+name: __nameKebab__
+version: 1.0.0
+description: A single-sentence description of this project (optional)
+appVersion: "1.0.0"

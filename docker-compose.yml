@@ -1,0 +1,64 @@
+version: '3'
+
+## Runs all services of the application
+# See docker-compose.override.yml for exposed ports and mounted volumes
+
+# Note:
+# Since this docker-compose can be used to run on the build server:
+# * Do not expose any ports
+# * Do not mount any volumes
+
+# Adjust the memory limits if necessary, but try to keep the limits low.
+
+services:
+    # ===marker:start:backend===
+    db:
+        image: postgres:15
+        environment:
+            - POSTGRES_PASSWORD=__nameLower__
+            - POSTGRES_USER=__nameLower__
+            - POSTGRES_DB=__nameLower__
+            - PGDATA=/var/lib/postgresql/data/pgdata
+            - TZ=Europe/Vienna
+            - PGTZ=Europe/Vienna
+        mem_limit: 300m
+    # ===marker:end:backend===
+
+    # ===marker:start:backend===
+    backend:
+        image: registry.craftworks.io/__nameKebab__/backend:latest
+        depends_on:
+            - db
+        environment:
+            - SPRING_PROFILES_ACTIVE=dev,testdata
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/__nameLower__
+            - SPRING_DATASOURCE_USERNAME=__nameLower__
+            - SPRING_DATASOURCE_PASSWORD=__nameLower__
+            - TZ=Europe/Vienna
+        mem_limit: 1024m
+    # ===marker:end:backend===
+
+    # ===marker:start:frontend===
+    frontend:
+        image: registry.craftworks.io/__nameKebab__/frontend:latest
+        environment:
+            - TZ=Europe/Vienna
+        # ===marker:start:backend===
+        depends_on:
+            - backend
+        # ===marker:end:backend===
+        mem_limit: 256m
+    # ===marker:end:frontend===
+
+    revproxy:
+        build: revproxy
+        environment:
+            - TZ=Europe/Vienna
+        depends_on:
+            # ===marker:start:backend===
+            - backend
+            # ===marker:end:backend===
+            # ===marker:start:frontend===
+            - frontend
+            # ===marker:end:frontend===
+        mem_limit: 256m

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-frontend
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-frontend
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-frontend
+  template:
+    metadata:
+      annotations:
+        # this will enable automatic updates of the deployment if build and thus image:latest is updated
+        build-number: {{ .Values.build.number | quote }}
+      labels:
+        app: {{ .Release.Name }}-frontend
+        # ingress: revproxy allows the frontend to handle incoming traffic from the global traefik revproxy
+        ingress: revproxy
+        # egress: internet allows the frontend to establish connections to the internet
+        # As long as no egress label is set, the frontend can only establish connections to pods in the same namespace
+        # Note that we take NDAs seriously. Allow internet access only if you are sure that the application is allowed to be publicly accessible and/or appropriate authentication is implemented.
+        # egress: internet
+    spec:
+      securityContext:
+        fsGroup: 101
+        runAsUser: 101
+      containers:
+        - name: frontend
+          image: {{ .Values.image.base }}/frontend:{{ .Values.image.version }}
+          imagePullPolicy: Always
+          env:
+            - name: TZ
+              value: 'Europe/Vienna'
+          ports:
+            - name: frontend-port
+              containerPort: 80
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /var/run/
+              name: run
+            - mountPath: /var/cache/nginx/
+              name: cache
+      imagePullSecrets:
+        - name: nexuscred
+      volumes:
+        - name: run
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-frontend
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-frontend
+  ports:
+    - targetPort: 80
+      port: 80

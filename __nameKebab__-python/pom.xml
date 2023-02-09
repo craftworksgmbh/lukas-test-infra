@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>__nameKebab__-python</artifactId>
+  <version>0.0.0</version>
+  <name>__nameDisplay__ Python</name>
+  <description></description>
+
+  <parent>
+    <groupId>at.craftworks.__companyLower__</groupId>
+    <artifactId>__nameKebab__</artifactId>
+    <version>0.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <properties>
+    <skip.validate.version.set>true</skip.validate.version.set>
+    <skip.compile>false</skip.compile>
+    <!--suppress UnresolvedMavenProperty -->
+    <skip.test>${skipTests}</skip.test>
+    <!-- skip.package is not used yet; once this execution stage is used, uncomment -->
+    <!--<skip.package>false</skip.package>-->
+
+    <!-- Sonar-Settings -->
+    <sonar.sources>src</sonar.sources>
+    <!-- Exclude tests and any python util scripts in top level dir -->
+    <sonar.exclusions>src/tests/**/*</sonar.exclusions>
+    <sonar.python.coverage.reportPaths>coverage.xml</sonar.python.coverage.reportPaths>
+    <sonar.python.xunit.reportPath>pytest-report.xml</sonar.python.xunit.reportPath>
+    <sonar.python.version>3.8,3.9,3.10</sonar.python.version>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>version-set</id>
+      <properties>
+        <skip.validate.version.set>false</skip.validate.version.set>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- Skip execution since it is assumed that required artifacts for SonarQube are already available (e.g. test-results) -->
+      <id>sonar-with-prebuilt-artifacts</id>
+      <properties>
+        <skip.validate.version.set>true</skip.validate.version.set>
+        <skip.compile>true</skip.compile>
+        <skip.test>true</skip.test>
+        <!-- skip.package is not used yet; once this execution stage is used, uncomment -->
+        <!--<skip.package>false</skip.package>-->
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <!-- disable maven-jar-plugin by binding it to a non-existent phase -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <!--suppress MavenModelInspection -->
+            <phase>never</phase>
+            <configuration>
+              <finalName>unwanted</finalName>
+              <classifier>unwanted</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- exec plugin -->
+      <!-- validate: tbump version -->
+      <!-- compile: Install pip -->
+      <!-- test: Run kedro test & coverage -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>bump-version</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>tbump</executable>
+              <arguments>
+                <argument>${project.version}</argument>
+                <argument>--only-patch</argument>
+                <argument>--non-interactive</argument>
+              </arguments>
+              <skip>${skip.validate.version.set}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-python-modules</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>pip3</executable>
+              <arguments>
+                <argument>install</argument>
+                <argument>-r</argument>
+                <argument>src/requirements.txt</argument>
+              </arguments>
+              <skip>${skip.compile}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>run-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>kedro</executable>
+              <arguments>
+                <argument>test</argument>
+                <argument>-s</argument>
+                <argument>--junitxml=pytest-report.xml</argument>
+                <argument>--cov-report=xml:coverage.xml</argument>
+                <argument>--cov=src/__projectSnake__</argument>
+              </arguments>
+              <skip>${skip.test}</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,14 @@
+---
+project_path: '/root/__nameKebab__.craftworks.io/'
+domain: '__nameKebab__.craftworks.io'
+
+db_external_port: None
+db_password: '{{ master_db_password }}'
+
+basic_auth_enabled: true
+basic_auth_password: '{{ master_basic_auth_password }}'
+
+spring_profiles_active: prod
+
+# Hint: the spring-profile `dev` enables swagger
+swagger_exposed: false

@@ -1,0 +1,88 @@
+version: 2
+
+updates:
+  # Maintain dependencies for npm
+  # ===marker:start:frontend===
+  - package-ecosystem: "npm"
+    directory: "/__nameKebab__-frontend"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+    versioning-strategy: lockfile-only
+  # ===marker:end:frontend===
+
+  - package-ecosystem: "npm"
+    directory: "/e2e"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+    versioning-strategy: lockfile-only
+
+  # Maintain dependencies for maven
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+    ignore:
+      # we cannot update to spring boot 3.x so easily
+      - dependency-name: "org.springframework.boot:*"
+        versions: ["[3.0.0,)"]
+
+  # ===marker:start:python===
+  # Maintain dependencies for pip
+  - package-ecosystem: "pip"
+    directory: "/__nameKebab__-python"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+  # ===marker:end:python===
+
+  # Maintain dependencies for docker
+  # ===marker:start:backend===
+  - package-ecosystem: "docker"
+    directory: "/__nameKebab__-backend"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+  # ===marker:end:backend===
+
+  # ===marker:start:frontend===
+  - package-ecosystem: "docker"
+    directory: "/__nameKebab__-frontend"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+  # ===marker:end:frontend===
+
+  - package-ecosystem: "docker"
+    directory: "/e2e"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+    ignore:
+      # even-numbered node releases are LTS
+      - dependency-name: "cypress/base"
+        versions: ["17.x", "19.x", "21.x", "23.x"]
+
+  - package-ecosystem: "docker"
+    directory: "/revproxy"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"
+
+  # Maintain dependencies for github-actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "__randomTimeAtNight__"
+      timezone: "Europe/Vienna"

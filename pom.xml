@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>at.craftworks.__companyLower__</groupId>
+    <artifactId>__nameKebab__</artifactId>
+    <version>0.0.0</version>
+    <packaging>pom</packaging>
+    <name>__nameDisplay__</name>
+    <description></description>
+
+    <properties>
+        <project.docker.repository1>registry.craftworks.io</project.docker.repository1>
+        <project.docker.repository2>__nameKebab__</project.docker.repository2>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <spotify.dockerfile-maven-plugin.version>1.4.13</spotify.dockerfile-maven-plugin.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>craftworks</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <modules>
+                <!-- ===marker:start:frontend=== -->
+                <module>__nameKebab__-frontend</module>
+                <!-- ===marker:end:frontend=== -->
+                <!-- ===marker:start:backend=== -->
+                <module>__nameKebab__-backend</module>
+                <!-- ===marker:end:backend=== -->
+                <!-- ===marker:start:python=== -->
+                <module>__nameKebab__-python</module>
+                <!-- ===marker:end:python=== -->
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sonar-with-prebuilt-artifacts</id>
+            <modules>
+                <!-- ===marker:start:frontend=== -->
+                <module>__nameKebab__-frontend</module>
+                <!-- ===marker:end:frontend=== -->
+                <!-- ===marker:start:backend=== -->
+                <module>__nameKebab__-backend</module>
+                <!-- ===marker:end:backend=== -->
+                <!-- ===marker:start:python=== -->
+                <module>__nameKebab__-python</module>
+                <!-- ===marker:end:python=== -->
+            </modules>
+        </profile>
+
+        <!-- ===marker:start:backend=== -->
+        <profile>
+            <id>backend</id>
+            <modules>
+                <module>__nameKebab__-backend</module>
+            </modules>
+        </profile>
+        <!-- ===marker:end:backend=== -->
+
+        <!-- ===marker:start:frontend=== -->
+        <profile>
+            <id>frontend</id>
+            <modules>
+                <module>__nameKebab__-frontend</module>
+            </modules>
+        </profile>
+        <!-- ===marker:end:frontend=== -->
+
+        <!-- ===marker:start:python=== -->
+        <profile>
+            <id>python</id>
+            <modules>
+                <module>__nameKebab__-python</module>
+            </modules>
+        </profile>
+        <!-- ===marker:end:python=== -->
+
+        <!-- ===marker:start:frontend=== -->
+        <profile>
+            <id>frontend-test</id>
+            <modules>
+                <module>__nameKebab__-frontend</module>
+            </modules>
+        </profile>
+        <!-- ===marker:end:frontend=== -->
+
+        <profile>
+            <id>version-set</id>
+            <modules>
+                <!-- ===marker:start:frontend=== -->
+                <module>__nameKebab__-frontend</module>
+                <!-- ===marker:end:frontend=== -->
+                <!-- ===marker:start:python=== -->
+                <module>__nameKebab__-python</module>
+                <!-- ===marker:end:python=== -->
+            </modules>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- skip deployment for all modules (therefore we use pluginmanagement)-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.10.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <delimiters>
+                            <delimiter>@</delimiter>
+                        </delimiters>
+                        <useDefaultDelimiters>false</useDefaultDelimiters>
+                        <nonFilteredFileExtensions>
+                            <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                        </nonFilteredFileExtensions>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>${spotify.dockerfile-maven-plugin.version}</version>
+                    <configuration>
+                        <repository>${project.docker.repository1}/${project.docker.repository2}/parent</repository>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

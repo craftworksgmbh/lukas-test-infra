@@ -1,0 +1,15 @@
+env: "base"
+
+# fixed parameters loaded for in navio hook for navio export (see src.__projektSnake__.extras.navio)
+# https://github.com/craftworksgmbh/craftworks-pynavio/blob/5b52366f34f44099191ffb3eae9d6a3b346e8d42/pynavio/_mlflow.py#L135
+navio:
+  example_request: example_request #catalog variable for example request, must not be null
+  pip_packages: null # if null, dependencies are automatically inferred
+  conda_packages: null # additional conda packages, optional
+  conda_channels: null # conda channels, optional
+  datasets: null #catalog variable for dataset upload, optional
+  explanations: disabled # 'disabled', 'default', 'plotly'
+  oodd: disabled # disabled, default
+  num_gpus: 0 # >= 0
+  upload_name: null # if not null, model zip will be uploaded to navio with the value as model name
+  credentials: navio_upload # key of upload credentials in conf/local

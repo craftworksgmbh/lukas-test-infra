@@ -1,0 +1,4 @@
+- hosts: qa_craftworks
+  roles:
+    - assertion-private-vars
+    - __nameKebab__-delivery

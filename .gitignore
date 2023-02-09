@@ -1,0 +1,23 @@
+# System files
+*.iml
+*.versionsBackup
+.classpath
+.factorypath
+.idea
+.DS_Store
+.project
+.settings
+.vscode
+
+# Log-Files
+logs
+
+# Private Config-Files
+*.private.properties
+
+# Dependencies
+node_modules
+
+# Artifacts
+target
+test-results

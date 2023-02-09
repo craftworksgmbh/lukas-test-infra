@@ -1,0 +1,44 @@
+name: Update NPM dependencies
+
+on:
+  # schedule:
+  # At 05:15 on day-of-month 28.
+  # https://crontab.guru/#15_5_28_*_*
+  # Scheduled to run a few days before the next dependabot schedule interval
+  # - cron: "15 5 28 * *"
+  workflow_dispatch:
+
+jobs:
+  update-npm-dependencies:
+    name: Update NPM dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
+      # ===marker:start:frontend===
+      - name: Update NPM dependencies - Frontend
+        run: |
+          cd __nameKebab__-frontend
+          npm update --save
+      # ===marker:end:frontend===
+
+      - name: Update NPM dependencies - E2E
+        run: |
+          cd e2e
+          npm update --save
+
+      - name: Commit and create PR
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: "Update NPM dependencies"
+          body: "Updates all npm packages to the latest semver version. Use with caution. Use it as long as https://github.com/dependabot/dependabot-core/issues/1190 is not implemented."
+          author: "GitHub <noreply@github.com>"
+          branch: "chore/update-npm-dependencies"
+          commit-message: "chore(deps): Update NPM dependencies"
+          labels: "dependencies, javascript, grouped"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+configures file appender with weekly rollover policy (fileNamePattern defines weekly rollover)
+-->
+
+<included>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${FILE_LOG_PATTERN}</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${LOG_PATH}/archived/log_%d{yyyy-ww}_%i.log
+            </fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>600</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+</included>

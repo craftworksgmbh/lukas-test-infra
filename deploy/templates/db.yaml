@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-db
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+  template:
+    metadata:
+      annotations:
+        # this will enable automatic updates of the deployment if cm changes
+        # https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
+        checksum/db-config: {{ include (print $.Template.BasePath "/db-config.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Release.Name }}-db
+    spec:
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+      containers:
+        - name: db
+          image: 'postgres:15'
+          imagePullPolicy: Always
+          args:
+            - -c
+            - log_min_duration_statement=1000
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: TZ
+              value: 'Europe/Vienna'
+            - name: PGTZ
+              value: 'Europe/Vienna'
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-db-config
+          ports:
+            - name: db-port
+              containerPort: 5432
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data
+            - mountPath: /var/run/postgresql
+              name: run
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-db-pvc
+        - name: run
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-db-pvc
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  storageClassName: 'ceph-filesystem'
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 0.5Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-db
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-db
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Release.Name }}-db
+  ports:
+    - targetPort: 5432
+      port: 5432

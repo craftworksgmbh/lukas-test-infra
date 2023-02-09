@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-db-config
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-db-config
+data:
+  POSTGRES_URL: jdbc:postgresql://{{ .Release.Name }}-db:5432/__nameLower__
+  POSTGRES_DB: __nameLower__
+  POSTGRES_USER: __nameLower__
+  POSTGRES_PASSWORD: __nameLower__

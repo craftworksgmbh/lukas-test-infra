@@ -1,0 +1,18 @@
+# This file defines the owners responsible for code in a repository.
+# Owners will be requested for review when someone opens a pull request.
+# Order is important; the last pattern that matches the file takes the most precedence.
+# See https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners for more information
+
+# team assignments: the team is assigned as reviewer; if one team member approves the PR, it is approved for the whole team
+# personal assignments: all assigned persons are independently assigned as reviewers; persons must approve individually
+
+* first-name.last-name@craftworks.at first-name.last-name@craftworks.at
+# ===marker:start:backend===
+/__nameKebab__-backend/ first-name.last-name@craftworks.at
+# ===marker:end:backend===
+# ===marker:start:frontend===
+/__nameKebab__-frontend/ first-name.last-name@craftworks.at
+# ===marker:end:frontend===
+# ===marker:start:python===
+/__nameKebab__-python/ first-name.last-name@craftworks.at
+# ===marker:end:python===

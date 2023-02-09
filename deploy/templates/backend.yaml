@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-backend
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-backend
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-backend
+  template:
+    metadata:
+      annotations:
+        # this will enable automatic updates of the deployment if build and thus image:latest is updated
+        build-number: {{ .Values.build.number | quote }}
+        # this will enable automatic updates of the deployment if cm changes
+        # https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
+        checksum/backend-app-props: {{ include (print $.Template.BasePath "/backend-app-props.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Release.Name }}-backend
+        # ingress: revproxy allows the backend to handle incoming traffic from the global traefik revproxy
+        ingress: revproxy
+        # egress: internet allows the backend to establish connections to the internet
+        # As long as no egress label is set, the backend can only establish connections to pods in the same namespace
+        # Note that we take NDAs seriously. Allow internet access only if you are sure that the application is allowed to be publicly accessible and/or appropriate authentication is implemented.
+        # egress: internet
+    spec:
+      # TODO: Add security context?
+      containers:
+        - name: backend
+          image: {{ .Values.image.base }}/backend:{{ .Values.image.version }}
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: '/etc/config/application.properties'
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-db-config
+                  key: POSTGRES_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-db-config
+                  key: POSTGRES_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-db-config
+                  key: POSTGRES_PASSWORD
+            - name: TZ
+              value: 'Europe/Vienna'
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-backend-app-props
+          ports:
+            - name: backend-port
+              containerPort: 8080
+          resources:
+            limits:
+              memory: 768Mi
+            requests:
+              memory: 768Mi
+          volumeMounts:
+            - mountPath: /etc/config
+              name: {{ .Release.Name }}-backend-app-props
+      imagePullSecrets:
+        - name: nexuscred
+      volumes:
+        - name: {{ .Release.Name }}-backend-app-props
+          configMap:
+            name: {{ .Release.Name }}-backend-app-props
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-backend
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: {{ .Release.Name }}-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-backend
+  ports:
+    - targetPort: 8080
+      port: 80
