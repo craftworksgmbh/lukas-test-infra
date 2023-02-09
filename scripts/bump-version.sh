@@ -18,12 +18,6 @@ validate_version() {
   fi
 }
 
-# ===marker:start:python===
-if ! [ -x "$(command -v tbump)" ]; then
-    echo '\033[1;31mError: tbump is not installed. Install it. E.g. via `pip install tbump`\033[0m' >&2
-    exit 1
-fi
-# ===marker:end:python===
 
 validate_version
 
@@ -39,9 +33,5 @@ git add ./**/pom.xml
 git add ./**/package-lock.json
 git add ./**/package.json
 
-# ===marker:start:python===
-# If there are other file that contain the version they need to be manually added here
-git add ./__nameKebab__-python/src/__projectLower__/__init__.py
-# ===marker:end:python===
 
 git commit -m "chore(version bump) : version $1"

@@ -8,6 +8,4 @@ _Remove task if not relevant to this pull request._
 - [ ] I have performed a self-review
 - [ ] I highlighted critical code for review
 - [ ] I have created unit/integration tests for key areas
-- [ ] ===marker:start:backend===
 - [ ] I generated the client api (OpenAPI/swagger)
-- [ ] ===marker:end:backend===

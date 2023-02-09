@@ -7,12 +7,5 @@
 # personal assignments: all assigned persons are independently assigned as reviewers; persons must approve individually
 
 * first-name.last-name@craftworks.at first-name.last-name@craftworks.at
-# ===marker:start:backend===
-/__nameKebab__-backend/ first-name.last-name@craftworks.at
-# ===marker:end:backend===
-# ===marker:start:frontend===
-/__nameKebab__-frontend/ first-name.last-name@craftworks.at
-# ===marker:end:frontend===
-# ===marker:start:python===
-/__nameKebab__-python/ first-name.last-name@craftworks.at
-# ===marker:end:python===
+/lukas-test-backend/ first-name.last-name@craftworks.at
+/lukas-test-frontend/ first-name.last-name@craftworks.at

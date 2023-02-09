@@ -4,26 +4,20 @@ version: '3'
 # For easier debugging, services are accessible via exposed ports
 
 services:
-    # ===marker:start:backend===
     db:
         ports:
             - "127.0.0.1:5432:5432"
-    # ===marker:end:backend===
 
-    # ===marker:start:backend===
     backend:
         volumes:
             - ./logs:/app/logs
             - ./conf:/app/conf
         ports:
             - "127.0.0.1:8080:8080"
-    # ===marker:end:backend===
 
-    # ===marker:start:frontend===
     frontend:
         ports:
             - "127.0.0.1:4200:80"
-    # ===marker:end:frontend===
 
     revproxy:
         ports:

@@ -1,5 +1,0 @@
-- name: check if newest private vars file exists (1PW ansible vars.private.yml for this project)
-  assert:
-    that:
-      - "private_vars_version >= 1"
-    msg: "you do not have the most recent private vars file"

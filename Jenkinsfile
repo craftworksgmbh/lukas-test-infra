@@ -47,43 +47,31 @@ pipeline {
         NAME_GIT_TAG_BRANCH = "$NAME_STAGING_BRANCH"
         // maven profile that is used to set the version
         VERSION_SET_PROFILE = "version-set"
-        // ===marker:start:backend===
         // maven profile that is used for backend
         BACKEND_MAVEN_PROFILE = "backend"
-        // ===marker:end:backend===
-        // ===marker:start:frontend===
         // maven profile that is used for frontend
         FRONTEND_MAVEN_PROFILE = "frontend"
-        // ===marker:end:frontend===
-        // ===marker:start:python===
-        // maven profile that is used for python component
-        PYTHON_MAVEN_PROFILE = "python"
-        // ===marker:end:python===
-        // ===marker:start:backend===
         // maven profile that is used for backend if test-only
         TEST_BACKEND_MAVEN_PROFILE = "backend"
-        // ===marker:end:backend===
-        // ===marker:start:frontend===
         // maven profile that is used for frontend if test-only
         TEST_FRONTEND_MAVEN_PROFILE = "frontend-test"
-        // ===marker:end:frontend===
         // maven profile that is used for sonarqube analysis
         SONAR_MAVEN_PROFILE = "sonar-with-prebuilt-artifacts"
-        SONAR_PROJECT_KEY = "__nameKebab__"
+        SONAR_PROJECT_KEY = "lukas-test"
         // slack channel that is used for notifications
-        SLACK_CHANNEL = "pr-__nameKebab__"
+        SLACK_CHANNEL = "pr-lukas-test"
 
         // If the following label is assigned to the PR, the PR is deployed
         DEPLOY_PR_LABEL = "deploy"
 
         // K8S / argoCD
-        K8S_NAMESPACE = "pr-__nameKebab__"
-        K8S_REPO = "git@github.com:craftworksgmbh/__nameKebab__.git"
+        K8S_NAMESPACE = "pr-lukas-test"
+        K8S_REPO = "git@github.com:craftworksgmbh/lukas-test.git"
         K8S_DEPLOY_FOLDER = "deploy"
         K8S_DEPLOY_URL = "https://__RELEASE_NAME_PLACEHOLDER__.k8s1.craftworks.io"
         K8S_DEPLOY_URL_RELEASE_NAME_PLACEHOLDER = "__RELEASE_NAME_PLACEHOLDER__"
-        K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN = "argo-cd-api-token-__nameKebab__"
-        K8S_AGRO_CD_PROJECT_NAME = "__nameKebab__"
+        K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN = "argo-cd-api-token-lukas-test"
+        K8S_AGRO_CD_PROJECT_NAME = "lukas-test"
         K8S_AGRO_CD_CLEANUP_BRANCH = "$NAME_DEV_BRANCH"
 
         // E2E Tests
@@ -207,7 +195,6 @@ pipeline {
                 expression { !STAGE_BUILD_E2E && !STAGE_BUILD_PUSH_DEPLOY }
             }
             parallel {
-                // ===marker:start:backend===
                 stage('test backend') {
                     steps {
                         withCwDockerRegistries {
@@ -222,8 +209,6 @@ pipeline {
                         }
                     }
                 }
-                // ===marker:end:backend===
-                // ===marker:start:frontend===
                 stage('test frontend') {
                     steps {
                         withCwDockerRegistries {
@@ -238,23 +223,6 @@ pipeline {
                         }
                     }
                 }
-                // ===marker:end:frontend===
-                // ===marker:start:python===
-                stage('test python') {
-                    steps {
-                        withCwDockerRegistries {
-                            script {
-                                sh "mvn -B -e -P ${ env.PYTHON_MAVEN_PROFILE} test"
-                            }
-                        }
-                    }
-                    post {
-                        always {
-                            junit checksName: 'Python Tests', testResults: '**/pytest-report.xml'
-                        }
-                    }
-                }
-                // ===marker:end:python===
             }
         }
 
@@ -266,7 +234,6 @@ pipeline {
                 expression { STAGE_BUILD_E2E || STAGE_BUILD_PUSH_DEPLOY }
             }
             parallel {
-                // ===marker:start:backend===
                 stage('test and build backend') {
                     steps {
                         withCwDockerRegistries {
@@ -281,8 +248,6 @@ pipeline {
                         }
                     }
                 }
-                // ===marker:end:backend===
-                // ===marker:start:frontend===
                 stage('test and build frontend') {
                     steps {
                         withCwDockerRegistries {
@@ -297,23 +262,6 @@ pipeline {
                         }
                     }
                 }
-                // ===marker:end:frontend===
-                // ===marker:start:python===
-                stage('test python') {
-                    steps {
-                        withCwDockerRegistries {
-                            script {
-                                sh "mvn -B -e -P ${ env.PYTHON_MAVEN_PROFILE} test"
-                            }
-                        }
-                    }
-                    post {
-                        always {
-                            junit checksName: 'Python Tests', testResults: '**/pytest-report.xml'
-                        }
-                    }
-                }
-                // ===marker:end:python===
             }
         }
 

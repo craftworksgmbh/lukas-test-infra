@@ -1,4 +1,3 @@
-# ===marker:start:frontend===
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -14,8 +13,6 @@ spec:
       services:
         - name: {{ .Release.Name }}-frontend
           port: 80
-# ===marker:end:frontend===
-# ===marker:start:backend===
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -31,4 +28,3 @@ spec:
       services:
         - name: {{ .Release.Name }}-backend
           port: 80
-# ===marker:end:backend===

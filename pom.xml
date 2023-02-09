@@ -4,16 +4,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>at.craftworks.__companyLower__</groupId>
-    <artifactId>__nameKebab__</artifactId>
+    <groupId>at.craftworks.lukas</groupId>
+    <artifactId>lukas-test</artifactId>
     <version>0.0.0</version>
     <packaging>pom</packaging>
-    <name>__nameDisplay__</name>
+    <name>Lukas AG test</name>
     <description></description>
 
     <properties>
         <project.docker.repository1>registry.craftworks.io</project.docker.repository1>
-        <project.docker.repository2>__nameKebab__</project.docker.repository2>
+        <project.docker.repository2>lukas-test</project.docker.repository2>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spotify.dockerfile-maven-plugin.version>1.4.13</spotify.dockerfile-maven-plugin.version>
@@ -27,78 +27,45 @@
             </activation>
 
             <modules>
-                <!-- ===marker:start:frontend=== -->
-                <module>__nameKebab__-frontend</module>
-                <!-- ===marker:end:frontend=== -->
-                <!-- ===marker:start:backend=== -->
-                <module>__nameKebab__-backend</module>
-                <!-- ===marker:end:backend=== -->
-                <!-- ===marker:start:python=== -->
-                <module>__nameKebab__-python</module>
-                <!-- ===marker:end:python=== -->
+                <module>lukas-test-frontend</module>
+                <module>lukas-test-backend</module>
             </modules>
         </profile>
 
         <profile>
             <id>sonar-with-prebuilt-artifacts</id>
             <modules>
-                <!-- ===marker:start:frontend=== -->
-                <module>__nameKebab__-frontend</module>
-                <!-- ===marker:end:frontend=== -->
-                <!-- ===marker:start:backend=== -->
-                <module>__nameKebab__-backend</module>
-                <!-- ===marker:end:backend=== -->
-                <!-- ===marker:start:python=== -->
-                <module>__nameKebab__-python</module>
-                <!-- ===marker:end:python=== -->
+                <module>lukas-test-frontend</module>
+                <module>lukas-test-backend</module>
             </modules>
         </profile>
 
-        <!-- ===marker:start:backend=== -->
         <profile>
             <id>backend</id>
             <modules>
-                <module>__nameKebab__-backend</module>
+                <module>lukas-test-backend</module>
             </modules>
         </profile>
-        <!-- ===marker:end:backend=== -->
 
-        <!-- ===marker:start:frontend=== -->
         <profile>
             <id>frontend</id>
             <modules>
-                <module>__nameKebab__-frontend</module>
+                <module>lukas-test-frontend</module>
             </modules>
         </profile>
-        <!-- ===marker:end:frontend=== -->
 
-        <!-- ===marker:start:python=== -->
-        <profile>
-            <id>python</id>
-            <modules>
-                <module>__nameKebab__-python</module>
-            </modules>
-        </profile>
-        <!-- ===marker:end:python=== -->
 
-        <!-- ===marker:start:frontend=== -->
         <profile>
             <id>frontend-test</id>
             <modules>
-                <module>__nameKebab__-frontend</module>
+                <module>lukas-test-frontend</module>
             </modules>
         </profile>
-        <!-- ===marker:end:frontend=== -->
 
         <profile>
             <id>version-set</id>
             <modules>
-                <!-- ===marker:start:frontend=== -->
-                <module>__nameKebab__-frontend</module>
-                <!-- ===marker:end:frontend=== -->
-                <!-- ===marker:start:python=== -->
-                <module>__nameKebab__-python</module>
-                <!-- ===marker:end:python=== -->
+                <module>lukas-test-frontend</module>
             </modules>
         </profile>
     </profiles>

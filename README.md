@@ -1,21 +1,14 @@
-# __nameDisplay__ (__nameKebab__)
+# Lukas AG test (lukas-test)
 
-Staging: [__nameKebab__-staging.craftworks.io](https://__nameKebab__-staging.k8s1.craftworks.io/)  
-Dev: [__nameKebab__-dev.craftworks.io](https://__nameKebab__-dev.k8s1.craftworks.io)
+Staging: [lukas-test-staging.craftworks.io](https://lukas-test-staging.k8s1.craftworks.io/)  
+Dev: [lukas-test-dev.craftworks.io](https://lukas-test-dev.k8s1.craftworks.io)
 
-SonarQube: [sonarqube.craftworks.io/dashboard?id=__nameKebab__](https://sonarqube.craftworks.io/dashboard?id=__nameKebab__)
+SonarQube: [sonarqube.craftworks.io/dashboard?id=lukas-test](https://sonarqube.craftworks.io/dashboard?id=lukas-test)
 
 ## Components
 
-* ===marker:start:backend===
-* __nameDisplay__ Backend ([__nameKebab__-backend](./__nameKebab__-backend))
-* ===marker:end:backend===
-* ===marker:start:frontend===
-* __nameDisplay__ Frontend ([__nameKebab__-frontend](./__nameKebab__-frontend))
-* ===marker:end:frontend===
-* ===marker:start:python===
-* __nameDisplay__ Python ([__nameKebab__-python](./__nameKebab__-python))
-* ===marker:end:python===
+* Lukas AG test Backend ([lukas-test-backend](./lukas-test-backend))
+* Lukas AG test Frontend ([lukas-test-frontend](./lukas-test-frontend))
 
 See [craftworks-template/README.md#how-tos](https://github.com/craftworksgmbh/craftworks-template#how-tos) on how to add/remove a component
 
@@ -27,9 +20,6 @@ See [craftworks-template/README.md#how-tos](https://github.com/craftworksgmbh/cr
 
 * Maven  
 * Node.js (Run `nvm use`)  
-* ===marker:start:python===
-* Python  
-* ===marker:end:python===
 
 We use Maven to build the application. Check [Maven Build Lifecycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html).
 

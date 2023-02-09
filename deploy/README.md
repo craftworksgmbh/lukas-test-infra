@@ -10,7 +10,7 @@ Deploy application to kubernetes cluster
 
 ### Prerequisites
 
-- Namespace `pr-__nameKebab__` created by infra team
+- Namespace `pr-lukas-test` created by infra team
 - Developer access to k8s1 cluster - See [how-to](https://craftworks.atlassian.net/wiki/spaces/INFRA/pages/5151522928)
 
 ### Continues Deployment
@@ -23,7 +23,7 @@ A PR can be deployed via the Jenkins parameter `DEPLOY_PR` or by assigning the l
 Via `kubectl` application resources can be checked by executing:
 ```
 # resource names are prefixed by their branch name
-kubectl get <resource_name> -n pr-__nameKebab__
+kubectl get <resource_name> -n pr-lukas-test
 ```
 
 Their status can be accessed via ArgoCD (see [how-to](https://craftworks.atlassian.net/wiki/spaces/INFRA/pages/5151522928) for access to dashboard).
@@ -35,16 +35,16 @@ Their status can be accessed via ArgoCD (see [how-to](https://craftworks.atlassi
 
 ```
 # Via literal
-kubectl create secret generic <name> -n pr-__nameKebab__ --from-literal=<key>=<value>
+kubectl create secret generic <name> -n pr-lukas-test --from-literal=<key>=<value>
  
 # Via file
 # https://kubernetes.io/docs/tasks/configmap-secret/managing-secret-using-config-file/
-kubectl create secret generic <name> -n pr-__nameKebab__ --from-file=<path/to/file>
+kubectl create secret generic <name> -n pr-lukas-test --from-file=<path/to/file>
 ```
 
 To check which secrets are used by deployments, run:
 ```
-kubectl get deployments -n pr-__nameKebab__ -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.template.spec.containers[*].envFrom[*]}{"\n"}{end}' | grep secretRef
+kubectl get deployments -n pr-lukas-test -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.template.spec.containers[*].envFrom[*]}{"\n"}{end}' | grep secretRef
 ```
 
 See [Secret Docs](https://kubernetes.io/docs/concepts/configuration/secret/) and [kubectl create secret generic command](https://jamesdefabia.github.io/docs/user-guide/kubectl/kubectl_create_secret_generic/) for more information.

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>lukas-test-frontend</artifactId>
+  <version>0.0.0</version>
+  <name>Lukas AG test Frontend</name>
+  <description></description>
+
+  <parent>
+    <groupId>at.craftworks.lukas</groupId>
+    <artifactId>lukas-test</artifactId>
+    <version>0.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <properties>
+    <skip.validate.version.set>true</skip.validate.version.set>
+    <skip.compile>false</skip.compile>
+    <!--suppress UnresolvedMavenProperty -->
+    <skip.test>${skipTests}</skip.test>
+    <skip.test.build>true</skip.test.build>
+    <skip.package>false</skip.package>
+
+    <!-- Sonar-Settings -->
+    <sonar.sources>src</sonar.sources>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>version-set</id>
+      <properties>
+        <skip.validate.version.set>false</skip.validate.version.set>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- Skip execution since it is assumed that required artifacts for SonarQube are already available (e.g. test-results) -->
+      <id>sonar-with-prebuilt-artifacts</id>
+      <properties>
+        <skip.validate.version.set>true</skip.validate.version.set>
+        <skip.compile>true</skip.compile>
+        <skip.test>true</skip.test>
+        <skip.test.build>true</skip.test.build>
+        <skip.package>true</skip.package>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>frontend-test</id>
+      <properties>
+        <skip.test.build>false</skip.test.build>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+
+      <!-- disable maven-jar-plugin by binding it to a non-existent phase -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <!--suppress MavenModelInspection -->
+            <phase>never</phase>
+            <configuration>
+              <finalName>unwanted</finalName>
+              <classifier>unwanted</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- exec plugin -->
+      <!-- validate: npm version -->
+      <!-- compile: npm ci -->
+      <!-- test: npm test:ci -->
+      <!-- test: npm test:build -->
+      <!-- package: npm run build:dist -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>bump-version</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>version</argument>
+                <argument>${project.version}</argument>
+                <argument>--allow-same-version</argument>
+                <argument>--no-git-tag-version</argument>
+              </arguments>
+              <skip>${skip.validate.version.set}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-node-modules</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>ci</argument>
+              </arguments>
+              <skip>${skip.compile}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>run-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>run</argument>
+                <argument>test:ci</argument>
+              </arguments>
+              <!--suppress MavenModelInspection -->
+              <skip>${skip.test}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>run-test-build</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>run</argument>
+                <argument>test:build</argument>
+              </arguments>
+              <skip>${skip.test.build}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <id>build-dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>npm</executable>
+              <arguments>
+                <argument>run</argument>
+                <argument>build:dist</argument>
+              </arguments>
+              <skip>${skip.package}</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- build docker image -->
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <configuration>
+          <repository>${project.docker.repository1}/${project.docker.repository2}/frontend</repository>
+          <skip>false</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

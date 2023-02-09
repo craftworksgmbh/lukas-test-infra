@@ -1,5 +1,5 @@
 image:
-  base: registry.craftworks.io/__nameKebab__
+  base: registry.craftworks.io/lukas-test
   version: latest
 build:
   number: 0

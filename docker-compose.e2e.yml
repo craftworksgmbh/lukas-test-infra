@@ -7,18 +7,16 @@ version: '3'
 # Adjust the memory limits if necessary, but try to keep the limits low.
 
 services:
-  # ===marker:start:backend===
   backend:
     environment:
       - SPRING_PROFILES_ACTIVE=e2e
-  # ===marker:end:backend===
 
   e2e:
     build: ./e2e
     depends_on:
       - revproxy
     environment:
-      - WAIT_HOSTS====marker:inline:start:backend===db:5432, backend:8080, ===marker:inline:end:backend======marker:inline:start:frontend===frontend:80===marker:inline:end:frontend===
+      - WAIT_HOSTS=db:5432, backend:8080, frontend:80
       - CYPRESS_baseUrl=http://revproxy:80
       - TZ=Europe/Vienna
     mem_limit: 2048m
