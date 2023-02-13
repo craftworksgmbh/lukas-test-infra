@@ -68,7 +68,7 @@ pipeline {
 
         // K8S / argoCD
         K8S_NAMESPACE = "pr-lukas-test"
-        K8S_REPO = "git@github.com:craftworksgmbh/lukas-test.git"
+        K8S_REPO = "git@github.com:craftworksgmbh/lukas-test-infra.git"
         K8S_DEPLOY_FOLDER = "deploy"
         K8S_DEPLOY_URL = "https://__RELEASE_NAME_PLACEHOLDER__.k8s1.craftworks.io"
         K8S_DEPLOY_URL_RELEASE_NAME_PLACEHOLDER = "__RELEASE_NAME_PLACEHOLDER__"
