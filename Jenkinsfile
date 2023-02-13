@@ -1,4 +1,4 @@
-@Library('craftworks-jenkins-library') _
+@Library('craftworks-jenkins-library@feature/k8s2') _
 
 Boolean STAGE_BUILD_E2E = false
 Boolean STAGE_BUILD_PUSH_DEPLOY = false
@@ -12,6 +12,8 @@ String IMAGE_VERSION = null
 String RELEASE_NAME = null
 
 String DEPLOY_URL = null
+
+at.craftworks.CraftworksCluster CLUSTER = at.craftworks.CraftworksCluster.K8S2
 
 pipeline {
     agent {
@@ -374,14 +376,22 @@ pipeline {
                 expression { STAGE_BUILD_PUSH_DEPLOY }
             }
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'sshkey-jenkins', keyFileVariable: 'SSH_PRIVATE_KEY'),
-                                 string(credentialsId: env.K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN, variable: 'ARGO_CD_API_TOKEN')]) {
+                withCredentials([string(credentialsId: env.K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN, variable: 'ARGO_CD_API_TOKEN')]) {
                     script {
                         (DEPLOY_URL) = at.craftworks.ArgoCDUtils.appCreateOrUpdate(
-                            steps, env, SSH_PRIVATE_KEY, ARGO_CD_API_TOKEN,
-                            env.K8S_AGRO_CD_PROJECT_NAME, env.K8S_NAMESPACE, env.K8S_REPO, env.K8S_DEPLOY_FOLDER, env.K8S_DEPLOY_URL, env.K8S_DEPLOY_URL_RELEASE_NAME_PLACEHOLDER,
-                            RELEASE_NAME, "--helm-set image.version=${IMAGE_VERSION} --helm-set build.number=${env.BUILD_NUMBER}"
-                        );
+                            steps,
+                            env,
+                            ARGO_CD_API_TOKEN,
+                            env.K8S_AGRO_CD_PROJECT_NAME,
+                            env.K8S_NAMESPACE,
+                            env.K8S_REPO,
+                            env.K8S_DEPLOY_FOLDER,
+                            env.K8S_DEPLOY_URL,
+                            env.K8S_DEPLOY_URL_RELEASE_NAME_PLACEHOLDER,
+                            RELEASE_NAME,
+                            CLUSTER,
+                            "--helm-set image.version=${IMAGE_VERSION} --helm-set build.number=${env.BUILD_NUMBER}"
+                        )
                     }
                 }
             }
@@ -412,11 +422,15 @@ pipeline {
                 expression { STAGE_DEPLOY_CLEANUP }
             }
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'sshkey-jenkins', keyFileVariable: 'SSH_PRIVATE_KEY'),
-                                 string(credentialsId: env.K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN, variable: 'ARGO_CD_API_TOKEN')]) {
+                withCredentials([string(credentialsId: env.K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN, variable: 'ARGO_CD_API_TOKEN')]) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         script {
-                            at.craftworks.ArgoCDUtils.appDeleteForDeletedGitBranches(steps, env, SSH_PRIVATE_KEY, ARGO_CD_API_TOKEN)
+                            at.craftworks.ArgoCDUtils.appDeleteForDeletedGitBranches(
+                                steps,
+                                env,
+                                ARGO_CD_API_TOKEN,
+                                CLUSTER
+                            )
                         }
                     }
                 }
