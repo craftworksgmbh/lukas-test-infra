@@ -13,7 +13,7 @@ String RELEASE_NAME = null
 
 String DEPLOY_URL = null
 
-at.craftworks.CraftworksCluster CLUSTER = at.craftworks.CraftworksCluster.K8S2
+at.craftworks.Cluster CLUSTER = at.craftworks.Cluster.CW_K8S2
 
 pipeline {
     agent {
