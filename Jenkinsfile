@@ -375,6 +375,7 @@ pipeline {
                 beforeAgent true
                 expression { STAGE_BUILD_PUSH_DEPLOY }
             }
+            agent none
             steps {
                 withCredentials([string(credentialsId: env.K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN, variable: 'ARGO_CD_API_TOKEN')]) {
                     script {
@@ -421,6 +422,7 @@ pipeline {
                 beforeAgent true
                 expression { STAGE_DEPLOY_CLEANUP }
             }
+            agent none
             steps {
                 withCredentials([string(credentialsId: env.K8S_CREDENTIALS_ID_ARGO_CD_API_TOKEN, variable: 'ARGO_CD_API_TOKEN')]) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
