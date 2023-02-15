@@ -1,4 +1,4 @@
-@Library('craftworks-jenkins-library@feature/k8s2') _
+@Library('craftworks-jenkins-library') _
 
 Boolean STAGE_BUILD_E2E = false
 Boolean STAGE_BUILD_PUSH_DEPLOY = false
