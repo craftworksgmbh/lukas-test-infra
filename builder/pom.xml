@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>at.craftworks.lukas</groupId>
+    <artifactId>lukas-test</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Lukas AG test</name>
+    <description></description>
+
+    <properties>
+        <project.docker.repository1>registry.craftworks.io</project.docker.repository1>
+        <project.docker.repository2>lukas-test</project.docker.repository2>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <spotify.dockerfile-maven-plugin.version>1.4.13</spotify.dockerfile-maven-plugin.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>craftworks</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <modules>
+                <module>lukas-test-frontend</module>
+                <module>lukas-test-backend</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sonar-with-prebuilt-artifacts</id>
+            <modules>
+                <module>lukas-test-frontend</module>
+                <module>lukas-test-backend</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>backend</id>
+            <modules>
+                <module>lukas-test-backend</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>frontend</id>
+            <modules>
+                <module>lukas-test-frontend</module>
+            </modules>
+        </profile>
+
+
+        <profile>
+            <id>frontend-test</id>
+            <modules>
+                <module>lukas-test-frontend</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>version-set</id>
+            <modules>
+                <module>lukas-test-frontend</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- skip deployment for all modules (therefore we use pluginmanagement)-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.10.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <delimiters>
+                            <delimiter>@</delimiter>
+                        </delimiters>
+                        <useDefaultDelimiters>false</useDefaultDelimiters>
+                        <nonFilteredFileExtensions>
+                            <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                        </nonFilteredFileExtensions>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>${spotify.dockerfile-maven-plugin.version}</version>
+                    <configuration>
+                        <repository>${project.docker.repository1}/${project.docker.repository2}/parent</repository>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
