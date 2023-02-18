@@ -1,0 +1,9 @@
+{
+  "name": "lukas-test",
+  "version": "1.0.0",
+  "scripts": {
+    "test:ci": "echo 'Warning: no ci-test specified' && mkdir -p test-results && echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?><testsuites name=\"frontend\" tests=\"1\" failures=\"0\" time=\"0\"><testcase name=\"Hello world\" time=\"0\"></testcase></testsuites>' > test-results/test-results.xml",
+    "test:build": "echo 'Warning: no build-test specified'",
+    "build:dist": "mkdir -p dist/lukas-test-frontend && cp src/index.html dist/lukas-test-frontend"
+  }
+}
