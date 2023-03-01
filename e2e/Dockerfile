@@ -1,4 +1,4 @@
-FROM cypress/base:18.12.1
+FROM cypress/base:18.14.1
 
 # Copy files
 COPY . /e2e
