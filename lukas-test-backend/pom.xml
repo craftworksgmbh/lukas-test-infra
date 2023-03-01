@@ -71,7 +71,7 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <!-- before upgrade to 9.x check if E2E tests are running. Spring Boot 2.7.2 is not yet compatible with flyway 9.x-->
-            <version>9.14.0</version>
+            <version>9.15.1</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
